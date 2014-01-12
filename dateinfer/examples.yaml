@@ -13,9 +13,43 @@ examples:
 ...
 ---
 name: RFC-822 (date only)
-format: "%d %b %y"
+format: "%d %b %Y"
 examples:
   - 9 May 1981
   - 31 Dec 1999
   - 1 Jan 2012
+...
+---
+name: Truncated ISO 8601 (removed in 2004 standard as ambiguous)
+format: "%y%m%d"
+examples:
+  - !!str 140111
+  - !!str 141101
+  - !!str 900505
+  - !!str 131213
+...
+---
+name: US Traditional (MM/DD/YYYY)
+format: "%m/%d/%Y"
+examples:
+  - 12/31/1999
+  - 11/11/1911
+  - 5/9/1981
+  - 6/3/1985
+...
+---
+name: US Traditional, Short (MM/DD/YY)
+format: "%m/%d/%y"
+examples:
+  - 12/31/99
+  - 11/11/11
+  - 5/9/81
+  - 6/3/85
+...
+---
+name: MLA
+format: "%d %B %Y"
+examples:
+  - 3 August 2009
+  - 2 May 1980
 ...
