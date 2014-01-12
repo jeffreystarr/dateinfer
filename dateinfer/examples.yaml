@@ -1,0 +1,21 @@
+# Examples of date formats
+# This document is formatted in YAML (http://yaml.org/ version 1.1).
+# Note that yaml will convert ISO dates into datetime objects. Use !!str to keep examples as strings.
+
+---
+name: ISO 8601 (date only)
+format: "%Y-%m-%d"
+examples:
+  - !!str 2014-01-11
+  - !!str 2014-11-01
+  - !!str 1990-05-05
+  - !!str 2013-12-13
+...
+---
+name: RFC-822 (date only)
+format: "%d %b %y"
+examples:
+  - 9 May 1981
+  - 31 Dec 1999
+  - 1 Jan 2012
+...
