@@ -2,19 +2,26 @@ import collections
 import re
 import string
 from date_elements import DayOfMonth, MonthNum, MonthTextLong, MonthTextShort, WeekdayLong, WeekdayShort, Year2, Year4, Filler
-
+from ruleproc import *
 
 DATE_ELEMENTS = (DayOfMonth, MonthNum, MonthTextLong, MonthTextShort, WeekdayLong, WeekdayShort, Year2, Year4)
 
+RULES = [
+    If(Contains(MonthNum, MonthTextLong), Swap(MonthNum, DayOfMonth)),
+    If(Contains(MonthNum, MonthTextShort), Swap(MonthNum, DayOfMonth))
+]
 
-def infer(examples):
+def infer(examples, alt_rules=None):
     """
     Returns a datetime.strptime-compliant format string for parsing the *most likely* date format
     used in examples. examples is a list containing example date strings.
     """
     date_classes = _tag_most_likely(examples)
 
-    date_classes = _apply_rewrites(date_classes)
+    if alt_rules:
+        date_classes = _apply_rewrites(date_classes, alt_rules)
+    else:
+        date_classes = _apply_rewrites(date_classes, RULES)
 
     date_string = ''
     for date_class in date_classes:
@@ -23,10 +30,13 @@ def infer(examples):
     return date_string
 
 
-def _apply_rewrites(date_classes):
+def _apply_rewrites(date_classes, rules):
     """
     Return a list of date elements by applying rewrites to the initial date element list
     """
+    for rule in rules:
+        date_classes = rule.execute(date_classes)
+
     return date_classes
 
 
