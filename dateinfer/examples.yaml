@@ -1,7 +1,7 @@
 # Examples of date formats
 # This document is formatted in YAML (http://yaml.org/ version 1.1).
 # Note that yaml will convert ISO dates into datetime objects. Use !!str to keep examples as strings.
-
+# Note: Names for formats are not meant to imply the format originated or is solely used with that name
 ---
 name: ISO 8601 (date only)
 format: "%Y-%m-%d"
@@ -18,15 +18,6 @@ examples:
   - 9 May 1981
   - 31 Dec 1999
   - 1 Jan 2012
-...
----
-name: Truncated ISO 8601 (removed in 2004 standard as ambiguous)
-format: "%y%m%d"
-examples:
-  - !!str 140111
-  - !!str 141101
-  - !!str 900505
-  - !!str 131213
 ...
 ---
 name: US Traditional (MM/DD/YYYY)
@@ -47,9 +38,40 @@ examples:
   - 6/3/85
 ...
 ---
-name: MLA
+name: MLA (dd mmm yyyy)
 format: "%d %B %Y"
 examples:
   - 3 August 2009
   - 2 May 1980
+...
+---
+name: Phillipines (mmmm dd, yyyy)
+format: "%B %d, %Y"
+examples:
+  - May 2, 1980
+  - August 3, 2009
+...
+---
+name: German (Traditional, Short) dd.mm.yy
+format: "%d.%m.%y"
+examples:
+  - 31.12.91
+  - 4.4.87
+  - 13.2.8
+...
+---
+name: German (Traditional, Long) dd.mm.yyyy
+format: "%d.%m.%Y"
+examples:
+  - 31.12.1991
+  - 4.4.1987
+  - 13.2.2008
+...
+---
+name: Implied Year
+format: "%m/%d"
+examples:
+  - 9/24
+  - 6/6
+  - 3/3
 ...
