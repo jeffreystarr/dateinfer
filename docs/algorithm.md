@@ -40,6 +40,7 @@ Overview of Approach
 4. For tokens that share the same index within the tokenized list, assign date time elements based on
    their probability (matches) and break ties based on their restrictivity (i.e. month numbers (1..12)
    are more restrictive than day of months (1..31).
-5. Apply corrective rules (similar to Brill Tagger) to arrive at a final list of date elements
+5. Apply corrective rules (similar to Brill Tagger: http://dx.doi.org/10.3115/974499.974526 ) to arrive at a final
+   list of date elements
 6. Convert date elements to their strptime format elements.
 
