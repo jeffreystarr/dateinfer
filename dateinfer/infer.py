@@ -167,6 +167,7 @@ def _tag_most_likely(examples):
 
     return most_likely
 
+
 def _tokenize_by_character_class(s):
     """
     Return a list of strings by splitting s (tokenizing) by character class.

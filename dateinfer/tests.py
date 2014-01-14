@@ -4,6 +4,7 @@ import infer
 import ruleproc
 import yaml
 
+
 def load_tests(loader, standard_tests, ignored):
     """
     Return a TestSuite containing standard_tests plus generated test cases
@@ -17,6 +18,7 @@ def load_tests(loader, standard_tests, ignored):
             suite.addTest(test_case_for_example(example))
 
     return suite
+
 
 def test_case_for_example(test_data):
     """
@@ -43,8 +45,8 @@ def test_case_for_example(test_data):
 
 class TestMode(unittest.TestCase):
     def testMode(self):
-        self.assertEqual(5, infer._mode([1,3,4,5,6,5,2,5,3]))
-        self.assertEqual(2, infer._mode([1,2,2,3,3]))  # with ties, pick least value
+        self.assertEqual(5, infer._mode([1, 3, 4, 5, 6, 5, 2, 5, 3]))
+        self.assertEqual(2, infer._mode([1, 2, 2, 3, 3]))  # with ties, pick least value
 
 
 class TestMostRestrictive(unittest.TestCase):

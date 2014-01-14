@@ -84,6 +84,7 @@ class Filler(DateElement):
     def is_numerical():
         return False
 
+
 class Hour12(DateElement):
     """1 .. 12 (zero padding accepted)"""
     directive = '%I'
@@ -303,4 +304,3 @@ class Year4(DateElement):
     @staticmethod
     def is_numerical():
         return True
-
