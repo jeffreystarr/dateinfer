@@ -1,0 +1,10 @@
+setup.cfg
+setup.py
+dateinfer/__init__.py
+dateinfer/date_elements.py
+dateinfer/examples.yaml
+dateinfer/infer.py
+dateinfer/ruleproc.py
+dateinfer/tests.py
+LICENSE
+README.md
