@@ -75,3 +75,31 @@ examples:
   - 6/6
   - 3/3
 ...
+---
+name: en_US.UTF-8
+format: "%a %b %d %H:%M:%S %Z %Y"
+examples:
+  - Mon Jan 13 09:52:52 MST 2014
+  - Tue Jan 21 15:30:00 EST 2014
+...
+---
+name: Non-24 Hour en_US.UTF-8
+format: "%a %b %d %I:%M:%S %p %Z %Y"
+examples:
+  - Mon Jan 13 9:52:52 am MST 2014
+  - Tue Jan 21 3:30:00 PM EST 2014
+...
+---
+name: Non-24 Hour, no seconds en_US.UTF-8
+format: "%a %b %d %I:%M %p %Z %Y"
+examples:
+  - Mon Jan 13 9:52 am MST 2014
+  - Tue Jan 21 3:30 PM EST 2014
+...
+---
+name: UTC
+format: "%Y-%m-%dT%H:%M:%S%z"
+examples:
+  - 2014-01-11T12:21:05+0000
+  - 2015-02-16T16:05:31-0400
+...

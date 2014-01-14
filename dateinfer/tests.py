@@ -1,6 +1,7 @@
 import unittest
 from dateinfer.date_elements import *
 import infer
+import ruleproc
 import yaml
 
 def load_tests(loader, standard_tests, ignored):
@@ -67,9 +68,48 @@ class TestPercentMatch(unittest.TestCase):
         self.assertAlmostEqual(percentages[2], 1.0)  # Filler any
 
 
+class TestRuleElements(unittest.TestCase):
+    def testFind(self):
+        elem_list = [Filler(' '), DayOfMonth(), Filler('/'), MonthNum(), Hour24(), Year4()]
+        t = ruleproc.Sequence.find
+
+        self.assertEqual(0, t([Filler(' ')], elem_list))
+        self.assertEqual(3, t([MonthNum], elem_list))
+        self.assertEqual(2, t([Filler('/'), MonthNum()], elem_list))
+        self.assertEqual(4, t([Hour24, Year4()], elem_list))
+
+        elem_list = [WeekdayShort, MonthTextShort, Filler(' '), Hour24, Filler(':'), Minute, Filler(':'), Second,
+                     Filler(' '), Timezone, Filler(' '), Year4]
+        self.assertEqual(3, t([Hour24, Filler(':')], elem_list))
+
+    def testMatch(self):
+        t = ruleproc.Sequence.match
+
+        self.assertTrue(t(Hour12, Hour12))
+        self.assertTrue(t(Hour12(), Hour12))
+        self.assertTrue(t(Hour12, Hour12()))
+        self.assertTrue(t(Hour12(), Hour12()))
+        self.assertFalse(t(Hour12, Hour24))
+        self.assertFalse(t(Hour12(), Hour24))
+        self.assertFalse(t(Hour12, Hour24()))
+        self.assertFalse(t(Hour12(), Hour24()))
+
+    def testNext(self):
+        elem_list = [Filler(' '), DayOfMonth(), Filler('/'), MonthNum(), Hour24(), Year4()]
+
+        next1 = ruleproc.Next(DayOfMonth, MonthNum)
+        self.assertTrue(next1.is_true(elem_list))
+
+        next2 = ruleproc.Next(MonthNum, Hour24)
+        self.assertTrue(next2.is_true(elem_list))
+
+        next3 = ruleproc.Next(Filler, Year4)
+        self.assertFalse(next3.is_true(elem_list))
+
+
 class TestTagMostLikely(unittest.TestCase):
     def testTagMostLikely(self):
-        examples = ['8/12/2004', '8/14/2004', '8/16/2004']
+        examples = ['8/12/2004', '8/14/2004', '8/16/2004', '8/25/2004']
         t = infer._tag_most_likely
 
         actual = t(examples)

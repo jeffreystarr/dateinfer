@@ -1,15 +1,62 @@
 import collections
-import re
 import string
-from date_elements import DayOfMonth, MonthNum, MonthTextLong, MonthTextShort, WeekdayLong, WeekdayShort, Year2, Year4, Filler
+from date_elements import *
 from ruleproc import *
 
-DATE_ELEMENTS = (DayOfMonth, MonthNum, MonthTextLong, MonthTextShort, WeekdayLong, WeekdayShort, Year2, Year4)
+# DATE_ELEMENTS is an ordered sequence of date elements, but does not include filler. It is ordered in
+# descending order of "restrictivity", the size of the range of acceptable inputs. The order is a little loose
+# since date element domains do not necessarily overlap (the range of Jan .. Dec is 12, but the domain is
+# independent of hours 0 .. 23, but overall a lesser value should be preferred over a greater value. The RULES
+# will be applied after the list is generated following these precedence rules.
+DATE_ELEMENTS = (AMPM(),
+                 MonthNum(),
+                 Hour12(),
+                 Hour24(),
+                 DayOfMonth(),
+                 Minute(),
+                 Second(),
+                 Year2(),
+                 Year4(),
+                 UTCOffset(),
+                 MonthTextShort(),
+                 MonthTextLong(),
+                 WeekdayShort(),
+                 WeekdayLong(),
+                 Timezone())
 
+F = Filler  # short-hand to clarify rules
 RULES = [
+    If(Sequence(MonthNum, F(':'), '\d', F(':'), '\d'),
+       SwapSequence([MonthNum, F(':'), '\d', F(':'), '\d'], [Hour12, F(':'), Minute, F(':'), Second])),
+    If(Sequence(Hour24, F(':'), '\d', F(':'), '\d'),
+       SwapSequence([Hour24, F(':'), '\d', F(':'), '\d'], [Hour24, F(':'), Minute, F(':'), Second])),
+    If(Sequence(MonthNum, F(':'), '\d', '\D'),
+       SwapSequence([MonthNum, F(':'), '.'], [Hour12, F(':'), Minute])),
+    If(Sequence(Hour24, F(':'), '\d', '\D'),
+       SwapSequence([Hour24, F(':'), '\d'], [Hour24, F(':'), Minute])),
+    If(And(
+        Sequence(Hour12, F(':'), Minute),
+        Contains(Hour24)),
+       Swap(Hour24, DayOfMonth)
+    ),
+    If(And(
+        Sequence(Hour12, F(':'), Minute),
+        Duplicate(Hour12)),
+       SwapDuplicateWhereSequenceNot(Hour12, MonthNum, (Hour12, F(':')))
+    ),
+    If(And(
+        Sequence(Hour24, F(':'), Minute),
+        Duplicate(Hour24)),
+       SwapDuplicateWhereSequenceNot(Hour24, DayOfMonth, [Hour24, F(':')])
+    ),
     If(Contains(MonthNum, MonthTextLong), Swap(MonthNum, DayOfMonth)),
-    If(Contains(MonthNum, MonthTextShort), Swap(MonthNum, DayOfMonth))
+    If(Contains(MonthNum, MonthTextShort), Swap(MonthNum, DayOfMonth)),
+    If(Sequence(MonthNum, '.', Hour12), SwapSequence([MonthNum, '.', Hour12], [MonthNum, KeepOriginal, DayOfMonth])),
+    If(Sequence(MonthNum, '.', Hour24), SwapSequence([MonthNum, '.', Hour24], [MonthNum, KeepOriginal, DayOfMonth])),
+    If(Sequence(F('+'), Year4), SwapSequence([F('+'), Year4], [UTCOffset, None])),
+    If(Sequence(F('-'), Year4), SwapSequence([F('+'), Year4], [UTCOffset, None]))
 ]
+
 
 def infer(examples, alt_rules=None):
     """
@@ -61,15 +108,12 @@ def _most_restrictive(date_elems):
     """
     Return the date_elem that has the most restrictive range from date_elems
     """
-    restrictivity = [MonthNum(), DayOfMonth(), Year2(), Year4(),
-                     MonthTextShort(), MonthTextLong(),
-                     WeekdayShort(), WeekdayLong()]
-    most_index = len(restrictivity)
+    most_index = len(DATE_ELEMENTS)
     for date_elem in date_elems:
-        if date_elem in restrictivity and restrictivity.index(date_elem) < most_index:
-            most_index = restrictivity.index(date_elem)
-    if most_index < len(restrictivity):
-        return restrictivity[most_index]
+        if date_elem in DATE_ELEMENTS and DATE_ELEMENTS.index(date_elem) < most_index:
+            most_index = DATE_ELEMENTS.index(date_elem)
+    if most_index < len(DATE_ELEMENTS):
+        return DATE_ELEMENTS[most_index]
     else:
         raise KeyError('No least restrictive date element found')
 
@@ -113,12 +157,12 @@ def _tag_most_likely(examples):
             most_likely.append(Filler(_mode(tokens)))
         else:
             if probabilities.count(max_prob) == 1:
-                most_likely.append(DATE_ELEMENTS[probabilities.index(max_prob)]())
+                most_likely.append(DATE_ELEMENTS[probabilities.index(max_prob)])
             else:
                 choices = []
                 for index, prob in enumerate(probabilities):
                     if prob == max_prob:
-                        choices.append(DATE_ELEMENTS[index]())
+                        choices.append(DATE_ELEMENTS[index])
                 most_likely.append(_most_restrictive(choices))
 
     return most_likely
