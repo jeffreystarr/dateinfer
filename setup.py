@@ -1,8 +1,7 @@
 from distutils.core import setup
-import os.path
 
 setup(name='dateinfer',
-      version='0.1.0',
+      version='0.1.1',
       description='Infers date format from examples',
       long_description="""Uses a series of pattern matching and rewriting rules to compute a "best guess" datetime.strptime format string give a list of example date strings.""",
       author='Jeffrey Starr',
@@ -19,5 +18,5 @@ setup(name='dateinfer',
           'Programming Language :: Python :: 3',
           'Topic :: Software Development :: Libraries :: Python Modules',
       ],
-      data_files=[('', [os.path.join('dateinfer', 'examples.yaml')])]
+      install_requires=['pytz']
       )
