@@ -40,7 +40,7 @@ $ pip install dateinfer
 >>>
 ````
 
-`dateinfer.infer` is given a list of example date strings. `infer` returns a `datetime.strftime`/`strptime`-compliant
+Give `dateinfer.infer` a list of example date strings. `infer` returns a `datetime.strftime`/`strptime`-compliant
 date format string for its "best guess" of a format string that will correctly parse the majority of the examples.
 
 
