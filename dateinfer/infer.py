@@ -1,4 +1,5 @@
 import collections
+import itertools
 import string
 from date_elements import *
 from ruleproc import *
@@ -177,20 +178,20 @@ def _tokenize_by_character_class(s):
         '54', ':', '52', ' ', 'MST', ' ', '2014']
     _tokenize_by_character_class('2013-08-14') => ['2013', '-', '08', '-', '14']
     """
-    character_classes = map(lambda chars: r"^[{0}]+".format(chars),
-                            [string.digits, string.letters, string.punctuation, string.whitespace])
+    character_classes = [string.digits, string.ascii_letters, string.punctuation, string.whitespace]
 
     result = []
-    rest = s
+    rest = list(s)
     while rest:
         progress = False
         for character_class in character_classes:
-            match = re.match(character_class, rest)
-            if match:
+            if rest[0] in character_class:
                 progress = True
-                take_away = match.group(0)
-                rest = rest[len(take_away):]
-                result.append(take_away)
+                token = ''
+                for take_away in itertools.takewhile(lambda c: c in character_class, rest[:]):
+                    token += take_away
+                    rest.pop(0)
+                result.append(token)
                 break
         if not progress:  # none of the character classes matched; unprintable character?
             result.append(rest[0])

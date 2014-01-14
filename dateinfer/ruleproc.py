@@ -1,4 +1,3 @@
-import exceptions
 from date_elements import Filler
 
 
@@ -33,7 +32,7 @@ class ConditionClause(object):
         """
         Return true if condition is true for the given input.
         """
-        raise exceptions.NotImplementedError()
+        raise NotImplementedError()
 
 
 class ActionClause(object):
@@ -45,7 +44,7 @@ class ActionClause(object):
         """
         Return a new instance of elem_list permuted by the action
         """
-        raise exceptions.NotImplementedError()
+        raise NotImplementedError()
 
 
 class And(ConditionClause):

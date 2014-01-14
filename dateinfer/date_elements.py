@@ -20,6 +20,9 @@ class DateElement(object):
             return False
         return self.directive == other.directive
 
+    def __hash__(self):
+        return self.directive.__hash__
+
     def __ne__(self, other):
         return not self.__eq__(other)
 
