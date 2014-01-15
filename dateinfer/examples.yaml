@@ -38,6 +38,12 @@ examples:
   - 6/3/85
 ...
 ---
+name: Little Endian
+format: "%d/%m/%Y"
+examples:
+  - 13/1/2012
+...
+---
 name: MLA (dd mmm yyyy)
 format: "%d %B %Y"
 examples:
