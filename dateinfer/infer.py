@@ -54,6 +54,9 @@ RULES = [
     If(Contains(MonthNum, MonthTextShort), Swap(MonthNum, DayOfMonth)),
     If(Sequence(MonthNum, '.', Hour12), SwapSequence([MonthNum, '.', Hour12], [MonthNum, KeepOriginal, DayOfMonth])),
     If(Sequence(MonthNum, '.', Hour24), SwapSequence([MonthNum, '.', Hour24], [MonthNum, KeepOriginal, DayOfMonth])),
+    If(Sequence(Hour12, '.', MonthNum), SwapSequence([Hour24, '.', MonthNum], [DayOfMonth, KeepOriginal, MonthNum])),
+    If(Sequence(Hour24, '.', MonthNum), SwapSequence([Hour24, '.', MonthNum], [DayOfMonth, KeepOriginal, MonthNum])),
+    If(Duplicate(MonthNum), Swap(MonthNum, DayOfMonth)),
     If(Sequence(F('+'), Year4), SwapSequence([F('+'), Year4], [UTCOffset, None])),
     If(Sequence(F('-'), Year4), SwapSequence([F('+'), Year4], [UTCOffset, None]))
 ]

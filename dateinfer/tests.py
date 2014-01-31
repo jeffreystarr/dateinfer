@@ -43,6 +43,20 @@ def test_case_for_example(test_data):
     return test_case
 
 
+class TestAmbiguousDateCases(unittest.TestCase):
+    """
+    TestCase for tests which results are ambiguous but can be assumed to fall in a small set of possibilities.
+    """
+    def testAmbg1(self):
+        self.assertIn(infer.infer(['1/1/2012']), ['%m/%d/%Y', '%d/%m/%Y'])
+
+    def testAmbg2(self):
+        # Note: as described in Issue #5 (https://github.com/jeffreystarr/dateinfer/issues/5), the result
+        # should be %d/%m/%Y as the more likely choice. However, at this point, we will allow %m/%d/%Y.
+        self.assertIn(infer.infer(['04/12/2012', '05/12/2012', '06/12/2012', '07/12/2012']),
+                      ['%d/%m/%Y', '%m/%d/%Y'])
+
+
 class TestMode(unittest.TestCase):
     def testMode(self):
         self.assertEqual(5, infer._mode([1, 3, 4, 5, 6, 5, 2, 5, 3]))
