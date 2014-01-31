@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='dateinfer',
-      version='0.1.1',
+      version='0.2.0',
       description='Infers date format from examples',
       long_description="""Uses a series of pattern matching and rewriting rules to compute a "best guess" datetime.strptime format string give a list of example date strings.""",
       author='Jeffrey Starr',
