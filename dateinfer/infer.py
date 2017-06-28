@@ -1,3 +1,8 @@
+"""
+This file contains some modification aimed at fixing bugs and improving the dateinfer library.
+The newlines/modification line are preceded with comments indicating the purpose.
+"""
+
 import collections
 import itertools
 import string
