@@ -38,7 +38,7 @@ RULES = [
     #modified to support mm/dd/yy (preference to month over DayofMonth: current pip version gives dd/mm/hh issue #10
     If(Sequence(MonthNum, F('/'), '\d', F('/'), Hour24),
        SwapSequence([MonthNum, F('/'), '\d', F('/'), Hour24], [MonthNum, F('/'), DayOfMonth, F('/'), Year2])),
-   #modified to support mm-dd-yy (preference to month over DayOfMonth: current pip version gives dd-mm-hh
+   #modified to support mm-dd-yy (preference to month over DayOfMonth: current pip version gives dd-mm-hh (like issue #10)
     If(Sequence(MonthNum, F('-'), '\d', F('-'), Hour24),
        SwapSequence([MonthNum, F('-'), '\d', F('-'), Hour24], [MonthNum, F('-'), DayOfMonth, F('-'), Year2])),
    #modified to support mm/dd/yy (preference to month over DayofMonth: current pip version gives dd/mm/mm (12-12-12)
@@ -47,12 +47,6 @@ RULES = [
    #modified to support mm-dd-yy (preference to month over DayOfMonth: current pip version gives dd-mm-mm (12-12-12)
     If(Sequence(MonthNum, F('-'), '\d', F('-'), MonthNum),
        SwapSequence([MonthNum, F('-'), '\d', F('-'), MonthNum], [MonthNum, F('-'), DayOfMonth, F('-'), Year2])),
-   #modified to support mm-dd-yyyy (new format)
-    If(Sequence(MonthNum, F('-'), '\d', F('-'), Year4),
-       SwapSequence([MonthNum, F('-'), '\d', F('-'), Year4], [MonthNum, F('-'), DayOfMonth, F('-'), Year4])),
-   #modified to support dd-mm-yyyy (new format)
-    If(Sequence(DayOfMonth, F('-'), '\d', F('-'), Year4),
-       SwapSequence([DayOfMonth, F('-'), '\d', F('-'), Year4], [DayOfMonth, F('-'), MonthNum, F('-'), Year4])),
     If(Sequence(MonthNum, F(':'), '\d', F(':'), '\d'),
        SwapSequence([MonthNum, F(':'), '\d', F(':'), '\d'], [Hour12, F(':'), Minute, F(':'), Second])),
     If(Sequence(Hour24, F(':'), '\d', F(':'), '\d'),
