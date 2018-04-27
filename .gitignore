@@ -1,2 +1,6 @@
 *.pyc
 __pycache__/
+
+# IDE's stuff
+*.layout
+.idea
