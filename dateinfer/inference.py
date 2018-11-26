@@ -6,8 +6,8 @@ The newlines/modification line are preceded with comments indicating the purpose
 import collections
 import itertools
 import string
-from date_elements import *
-from ruleproc import *
+from dateinfer.date_elements import *
+from dateinfer.ruleproc import *
 
 # DATE_ELEMENTS is an ordered sequence of date elements, but does not include filler. It is ordered in
 # descending order of "restrictivity", the size of the range of acceptable inputs. The order is a little loose
