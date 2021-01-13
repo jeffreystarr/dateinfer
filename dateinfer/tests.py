@@ -1,7 +1,7 @@
 import unittest
 from dateinfer.date_elements import *
-import infer
-import ruleproc
+from . import infer
+from . import ruleproc
 import yaml
 
 

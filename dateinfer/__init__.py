@@ -1,3 +1,3 @@
 __author__ = 'jeffrey.starr@ztoztechnologies.com'
 
-from infer import infer
+from .infer import infer
