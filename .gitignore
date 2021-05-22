@@ -4,6 +4,7 @@ __pycache__/
 # IDE's stuff
 *.layout
 .idea
+.vscode
 
 # Virtualenv
 venv/*
@@ -15,7 +16,6 @@ eggs/
 .eggs/
 *.egg
 *.egg-info
-
 
 # Coverage
 htmlcov/
