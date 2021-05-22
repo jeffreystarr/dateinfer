@@ -1,0 +1,111 @@
+# Examples of date formats
+# This document is formatted in YAML (http://yaml.org/ version 1.1).
+# Note that yaml will convert ISO dates into datetime objects. Use !!str to keep examples as strings.
+# Note: Names for formats are not meant to imply the format originated or is solely used with that name
+---
+name: ISO 8601 (date only)
+format: "%Y-%m-%d"
+examples:
+  - !!str 2014-01-11
+  - !!str 2014-11-01
+  - !!str 1990-05-05
+  - !!str 2013-12-13
+...
+---
+name: RFC-822 (date only)
+format: "%d %b %Y"
+examples:
+  - 9 May 1981
+  - 31 Dec 1999
+  - 1 Jan 2012
+...
+---
+name: US Traditional (MM/DD/YYYY)
+format: "%m/%d/%Y"
+examples:
+  - 12/31/1999
+  - 11/11/1911
+  - 5/9/1981
+  - 6/3/1985
+...
+---
+name: US Traditional, Short (MM/DD/YY)
+format: "%m/%d/%y"
+examples:
+  - 12/31/99
+  - 11/11/11
+  - 5/9/81
+  - 6/3/85
+...
+---
+name: Little Endian
+format: "%d/%m/%Y"
+examples:
+  - 13/1/2012
+...
+---
+name: MLA (dd mmm yyyy)
+format: "%d %B %Y"
+examples:
+  - 3 August 2009
+  - 2 May 1980
+...
+---
+name: Phillipines (mmmm dd, yyyy)
+format: "%B %d, %Y"
+examples:
+  - May 2, 1980
+  - August 3, 2009
+...
+---
+name: German (Traditional, Short) dd.mm.yy
+format: "%d.%m.%y"
+examples:
+  - 31.12.91
+  - 4.4.87
+  - 13.2.8
+...
+---
+name: German (Traditional, Long) dd.mm.yyyy
+format: "%d.%m.%Y"
+examples:
+  - 31.12.1991
+  - 4.4.1987
+  - 13.2.2008
+...
+---
+name: Implied Year
+format: "%m/%d"
+examples:
+  - 9/24
+  - 6/6
+  - 3/3
+...
+---
+name: en_US.UTF-8
+format: "%a %b %d %H:%M:%S %Z %Y"
+examples:
+  - Mon Jan 13 09:52:52 MST 2014
+  - Tue Jan 21 15:30:00 EST 2014
+...
+---
+name: Non-24 Hour en_US.UTF-8
+format: "%a %b %d %I:%M:%S %p %Z %Y"
+examples:
+  - Mon Jan 13 9:52:52 am MST 2014
+  - Tue Jan 21 3:30:00 PM EST 2014
+...
+---
+name: Non-24 Hour, no seconds en_US.UTF-8
+format: "%a %b %d %I:%M %p %Z %Y"
+examples:
+  - Mon Jan 13 9:52 am MST 2014
+  - Tue Jan 21 3:30 PM EST 2014
+...
+---
+name: UTC
+format: "%Y-%m-%dT%H:%M:%S%z"
+examples:
+  - 2014-01-11T12:21:05+0000
+  - 2015-02-16T16:05:31-0400
+...
