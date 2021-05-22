@@ -3,6 +3,8 @@ dateinfer
 
 Python library to infer date format from examples
 
+**IMPORTANT**: This repository is a convenient fork from https://github.com/jeffreystarr/dateinfer which is no longer maintained. All core logic was developed in the original version, and this repository is just a refactored and better maintained version.
+
 Table of Contents
 -----------------
 
@@ -27,7 +29,7 @@ the file.
 The simplest way to install the library is:
 
 ````
-$ pip install dateinfer
+$ pip install -r requirements.txt
 ````
 
 <a name="usage"></a>Usage
