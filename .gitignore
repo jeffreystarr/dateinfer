@@ -4,3 +4,24 @@ __pycache__/
 # IDE's stuff
 *.layout
 .idea
+
+# Virtualenv
+venv/*
+
+# Distribution 
+dist/
+build/
+eggs/
+.eggs/
+*.egg
+
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+tests/coverage
+
+# Pytest
+.pytest_cache
+__pycache__/
