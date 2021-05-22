@@ -1,4 +1,10 @@
-from dateinfer.date_elements import Filler
+"""Module with rule processors for package"""
+
+from dateinfer.date_elements import (
+    Filler as F, MonthNum, Hour12, Hour24, Year4,
+    Minute, Second, DayOfMonth,
+    MonthTextLong, MonthTextShort, UTCOffset,
+)
 
 
 class If(object):
@@ -7,8 +13,8 @@ class If(object):
     """
     def __init__(self, condition, action):
         """
-        Initialize the rule with a condition clause and an action clause that will be executed
-        if condition clause is true.
+        Initialize the rule with a condition clause and an action
+        clause that will be executed if condition clause is true.
         """
         self.condition = condition
         self.action = action
@@ -96,8 +102,8 @@ class KeepOriginal(object):
 
 class Next(ConditionClause):
     """
-    Return true if A and B are found next to each other in the elem_list (with zero or more Filler elements
-    between them).
+    Return true if A and B are found next to each other in the elem_list
+    (with zero or more Filler elements between them).
     """
     def __init__(self, a_elem, b_elem):
         self.a_elem = a_elem
@@ -117,15 +123,15 @@ class Next(ConditionClause):
                 left = min(a_position, b_position)
                 right = max(a_position, b_position)
                 between = elem_list[left + 1:right - 1]
-                if len(between) == 0 or all([type(e) is Filler] for e in between):
+                if len(between) == 0 or all([type(e) is F] for e in between):
                     return True
         return False
 
 
 class Sequence(ConditionClause):
     """
-    Returns true if the given sequence is found in elem_list. The sequence consists of date elements
-    and wild cards.
+    Returns true if the given sequence is found in elem_list.
+    The sequence consists of date elements and wild cards.
 
     Wild cards:
     . (period): Any single date element (including Filler)
@@ -135,7 +141,8 @@ class Sequence(ConditionClause):
         self.sequence = sequence
 
     def is_true(self, elem_list):
-        seq_pos = 0  # if we find every element in sequence (pos == length(self.sequence), then a match is found
+        # match if we find every element in sequence (pos == length(self.sequence)
+        seq_pos = 0
 
         for elem in elem_list:
             if self.match(elem, self.sequence[seq_pos]):
@@ -154,9 +161,9 @@ class Sequence(ConditionClause):
         if type(seq_expr) is str:  # wild-card
             if seq_expr == '.':  # match any element
                 return True
-            elif seq_expr == '\d':
+            elif seq_expr == r'\d':
                 return elem.is_numerical()
-            elif seq_expr == '\D':
+            elif seq_expr == r'\D':
                 return not elem.is_numerical()
             else:  # invalid wild-card specified
                 raise LookupError('{0} is not a valid wild-card'.format(seq_expr))
@@ -197,7 +204,8 @@ class Swap(ActionClause):
 
 class SwapDuplicateWhereSequenceNot(ActionClause):
     """
-    Replace remove_me with insert_me in the case where remove_me is not part of the sequence.
+    Replace remove_me with insert_me in the case where
+    remove_me is not part of the sequence.
     """
     def __init__(self, remove_me, insert_me, seq):
         self.remove_me = remove_me
@@ -218,7 +226,9 @@ class SwapDuplicateWhereSequenceNot(ActionClause):
                     copy[index] = self.insert_me
                     return copy
 
-        raise LookupError('Failed to find element {0} to replace with {1} in {2} ignoring {3} between [{4},{5})'.format(self.remove_me, self.insert_me, copy, self.seq, start_pos, end_pos))
+        raise LookupError('Failed to find element {0} to replace with {1} in {2} ignoring {3} '
+                          'between [{4},{5})'.format(
+                              self.remove_me, self.insert_me, copy, self.seq, start_pos, end_pos))
 
 
 class SwapSequence(ActionClause):
@@ -242,3 +252,43 @@ class SwapSequence(ActionClause):
             copy.remove(None)
 
         return copy
+
+
+# Rules to infer a data
+RULES = [
+    If(Sequence(MonthNum, F(':'), r'\d', F(':'), r'\d'),
+       SwapSequence([MonthNum, F(':'), r'\d', F(':'), r'\d'],
+                    [Hour12, F(':'), Minute, F(':'), Second])),
+    If(Sequence(Hour24, F(':'), r'\d', F(':'), r'\d'),
+       SwapSequence([Hour24, F(':'), r'\d', F(':'), r'\d'],
+                    [Hour24, F(':'), Minute, F(':'), Second])),
+    If(Sequence(MonthNum, F(':'), r'\d', r'\D'),
+       SwapSequence([MonthNum, F(':'), '.'], [Hour12, F(':'), Minute])),
+    If(Sequence(Hour24, F(':'), r'\d', r'\D'),
+       SwapSequence([Hour24, F(':'), r'\d'], [Hour24, F(':'), Minute])),
+    If(And(
+        Sequence(Hour12, F(':'), Minute),
+        Contains(Hour24)),
+       Swap(Hour24, DayOfMonth)),
+    If(And(
+        Sequence(Hour12, F(':'), Minute),
+        Duplicate(Hour12)),
+       SwapDuplicateWhereSequenceNot(Hour12, MonthNum, (Hour12, F(':')))),
+    If(And(
+        Sequence(Hour24, F(':'), Minute),
+        Duplicate(Hour24)),
+       SwapDuplicateWhereSequenceNot(Hour24, DayOfMonth, [Hour24, F(':')])),
+    If(Contains(MonthNum, MonthTextLong), Swap(MonthNum, DayOfMonth)),
+    If(Contains(MonthNum, MonthTextShort), Swap(MonthNum, DayOfMonth)),
+    If(Sequence(MonthNum, '.', Hour12), SwapSequence([MonthNum, '.', Hour12],
+                                                     [MonthNum, KeepOriginal, DayOfMonth])),
+    If(Sequence(MonthNum, '.', Hour24), SwapSequence([MonthNum, '.', Hour24],
+                                                     [MonthNum, KeepOriginal, DayOfMonth])),
+    If(Sequence(Hour12, '.', MonthNum), SwapSequence([Hour24, '.', MonthNum],
+                                                     [DayOfMonth, KeepOriginal, MonthNum])),
+    If(Sequence(Hour24, '.', MonthNum), SwapSequence([Hour24, '.', MonthNum],
+                                                     [DayOfMonth, KeepOriginal, MonthNum])),
+    If(Duplicate(MonthNum), Swap(MonthNum, DayOfMonth)),
+    If(Sequence(F('+'), Year4), SwapSequence([F('+'), Year4], [UTCOffset, None])),
+    If(Sequence(F('-'), Year4), SwapSequence([F('+'), Year4], [UTCOffset, None])),
+]

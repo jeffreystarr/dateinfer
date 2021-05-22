@@ -1,9 +1,9 @@
+"""Module with date elements for package"""
+
 import calendar
-import pytz
 import re
 
-
-__author__ = 'jeffrey.starr@ztoztechnologies.com'
+import pytz
 
 
 class DateElement(object):
@@ -73,8 +73,8 @@ class DayOfMonth(DateElement):
 
 class Filler(DateElement):
     """
-    A special date class, filler matches everything. Filler is usually used for matches of whitespace
-    and punctuation.
+    A special date class, filler matches everything. Filler is usually used
+    for matches of whitespace and punctuation.
     """
     def __init__(self, filler):
         self.directive = filler.replace('%', '%%')  # escape %
@@ -231,7 +231,8 @@ class UTCOffset(DateElement):
         # technically offset_re should be:
         # ^[-\+]\d\d:?(\d\d)?$
         # but python apparently only uses the +/-hhmm format
-        # A rule will catch the preceding + and - and combine the two entries since punctuation and numbers
+        # A rule will catch the preceding + and - and combine
+        # the two entries since punctuation and numbers
         # are separated by the tokenizer.
         offset_re = r'^\d\d\d\d$'
         return re.match(offset_re, token)
@@ -299,7 +300,7 @@ class Year4(DateElement):
         if len(token) != 4:
             return False
         try:
-            year = int(token)
+            int(token)
             return True
         except ValueError:
             return False
@@ -307,3 +308,29 @@ class Year4(DateElement):
     @staticmethod
     def is_numerical():
         return True
+
+
+# DATE_ELEMENTS is an ordered sequence of date elements, but does not include filler.
+# It is ordered in descending order of "restrictivity", the size of the range
+# of acceptable inputs. The order is a little loose since date element domains do not
+# necessarily overlap (the range of Jan .. Dec is 12, but the domain is
+# independent of hours 0 .. 23, but overall a lesser value should be preferred
+# over a greater value. The RULES will be applied after the list is generated
+# following these precedence rules.
+DATE_ELEMENTS = (
+    AMPM(),
+    MonthNum(),
+    Hour12(),
+    Hour24(),
+    DayOfMonth(),
+    Minute(),
+    Second(),
+    Year2(),
+    Year4(),
+    UTCOffset(),
+    MonthTextShort(),
+    MonthTextLong(),
+    WeekdayShort(),
+    WeekdayLong(),
+    Timezone(),
+)

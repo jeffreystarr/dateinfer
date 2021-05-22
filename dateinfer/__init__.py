@@ -1,3 +1,1 @@
-__author__ = 'jeffrey.starr@ztoztechnologies.com'
-
-from dateinfer.infer import infer
+from dateinfer.core import infer  # NoQA
