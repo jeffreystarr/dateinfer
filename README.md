@@ -3,6 +3,9 @@ dateinfer
 
 Python library to infer date format from examples
 
+**This repository is no longer maintained.** Please switch to an active fork or pypi package such as [hi-dateinfer](https://pypi.org/project/hi-dateinfer/).
+
+
 Table of Contents
 -----------------
 
